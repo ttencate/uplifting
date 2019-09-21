@@ -10,7 +10,7 @@ script = ExtResource( 1 )
 position = Vector2( 0, 768 )
 num_lifts = 2
 
-[node name="pawns" type="Node2D" parent="building"]
+[node name="pawns" type="YSort" parent="building"]
 
 [node name="spawn_timer" type="Timer" parent="."]
 autostart = true

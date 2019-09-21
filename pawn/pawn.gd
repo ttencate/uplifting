@@ -53,31 +53,37 @@ func _ready():
 func _sort_slots(a, b):
 	return global_position.distance_squared_to(a[0].global_position) < global_position.distance_squared_to(b[0].global_position)
 
+func _move_to_lift(delta, building):
+	var free_slots = building.get_free_slots(flr)
+	free_slots.sort_custom(self, "_sort_slots")
+	if len(free_slots) > 0:
+		var destination_slot = free_slots[0][0]
+		var destination_lift = free_slots[0][1]
+		var distance = global_position.x - destination_slot.global_position.x
+		if abs(distance) < 32:
+			print("Entering lift")
+			_slot = destination_slot
+			_slot.remote_path = get_path()
+			_lift = destination_lift
+			z_index = -50
+			_state = State.IN_LIFT
+			emit_signal("entered_lift", destination, _lift)
+		else:
+			position.x -= delta * _walk_to_lift_speed * sign(distance)
+		return true
+	else:
+		return false
+
 func tick(delta, building):
 	match _state:
 		State.MOVING_INTO_VIEW:
-			if len(building.get_free_slots(flr)) > 0:
-				_state = State.MOVING_TO_LIFT
 			var distance = position.x - _preferred_x
-			if abs(distance) > 32:
+			if abs(distance) <= 32:
+				_state = State.MOVING_TO_LIFT
+			if not _move_to_lift(delta, building):
 				position.x -= delta * _walk_in_speed * sign(distance)
 		State.MOVING_TO_LIFT:
-			var free_slots = building.get_free_slots(flr)
-			free_slots.sort_custom(self, "_sort_slots")
-			if len(free_slots) > 0:
-				var destination_slot = free_slots[0][0]
-				var destination_lift = free_slots[0][1]
-				var distance = global_position.x - destination_slot.global_position.x
-				if abs(distance) < 32:
-					print("Entering lift")
-					_slot = destination_slot
-					_slot.remote_path = get_path()
-					_lift = destination_lift
-					z_index = -50
-					_state = State.IN_LIFT
-					emit_signal("entered_lift", destination, _lift)
-				else:
-					position.x -= delta * _walk_to_lift_speed * sign(distance)
+			_move_to_lift(delta, building)
 		State.IN_LIFT:
 			if _lift.flr == destination:
 				print("Arrived at destination")
@@ -86,7 +92,7 @@ func tick(delta, building):
 				position.y = Constants.cell_pos(flr, _lift.index).y - 96 + rand_range(-32, 32)
 				z_index = 10
 				_state = State.ARRIVED
-				if randi() % 2 == 0:
+				if position.x < building.size.x / 2:
 					_preferred_x = -64
 				else:
 					_preferred_x = building.size.x + 64
