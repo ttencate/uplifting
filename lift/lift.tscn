@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://lift/lift.svg" type="Texture" id=1]
+
+[node name="lift" type="Node2D"]
+
+[node name="lift" type="Sprite" parent="."]
+position = Vector2( 128, -1152 )
+z_index = -50
+texture = ExtResource( 1 )
