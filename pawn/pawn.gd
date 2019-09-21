@@ -9,7 +9,7 @@ signal arrived
 enum State { MOVING_INTO_VIEW, MOVING_TO_LIFT, IN_LIFT, ARRIVED }
 
 var _state = State.MOVING_INTO_VIEW
-var _walk_in_speed: float = 64
+var _walk_in_speed: float = 48
 var _walk_to_lift_speed: float = 64
 var _walk_out_speed: float = 96
 var _lift = null
@@ -47,8 +47,8 @@ func _ready():
 	while abs(head_value - body_value) < 0.2:
 		head_value = rand_range(0.5, 1)
 		body_value = rand_range(0.5, 1)
-	$head.modulate = Color.from_hsv(hue, saturation, head_value)
-	$body.modulate = Color.from_hsv(hue, saturation, body_value)
+	$body/head.self_modulate = Color.from_hsv(hue, saturation, head_value)
+	$body.self_modulate = Color.from_hsv(hue, saturation, body_value)
 
 func _sort_slots(a, b):
 	return global_position.distance_squared_to(a[0].global_position) < global_position.distance_squared_to(b[0].global_position)
@@ -75,6 +75,7 @@ func _move_to_lift(delta, building):
 		return false
 
 func tick(delta, building):
+	var orig_x = position.x
 	match _state:
 		State.MOVING_INTO_VIEW:
 			var distance = position.x - _preferred_x
@@ -105,3 +106,7 @@ func tick(delta, building):
 			position.x -= delta * _walk_out_speed * sign(distance)
 			if not $visibility_notifier.is_on_screen():
 				queue_free()
+	if position.x != orig_x:
+		$animation_player.play("walk")
+	else:
+		$animation_player.play("stand")
