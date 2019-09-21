@@ -18,7 +18,6 @@ position = Vector2( 128, -192 )
 texture = ExtResource( 3 )
 
 [node name="light" parent="." instance=ExtResource( 4 )]
-visible = false
 position = Vector2( 128, -224 )
 
 [node name="button" type="TextureButton" parent="."]

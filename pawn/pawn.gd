@@ -48,14 +48,17 @@ func tick(building):
 					_slot = lift.get_free_slot()
 					_slot.remote_path = get_path()
 					_lift = lift
+					z_index = -50
 					state = State.IN_LIFT
 					emit_signal("button_pressed", destination, lift)
+					break
 		State.IN_LIFT:
 			if _lift.flr == destination:
 				print("Arrived at destination")
 				_slot.remote_path = NodePath("")
 				_slot = null
 				_lift = null
+				z_index = 0
 				# TODO move onto floor
 				state = State.ARRIVED
 				emit_signal("arrived")
