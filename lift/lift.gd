@@ -20,16 +20,12 @@ func init(index):
 func doors_open():
 	return flr == floor(flr)
 
-func has_room():
-	return get_free_slot() != null
-
-func get_free_slot():
-	var shuffled_slots = _slots.duplicate()
-	shuffled_slots.shuffle()
-	for slot in shuffled_slots:
+func get_free_slots():
+	var slots = []
+	for slot in _slots:
 		if not slot.remote_path:
-			return slot
-	return null
+			slots.push_back(slot)
+	return slots
 
 func get_pawns():
 	var pawns = []
@@ -45,7 +41,7 @@ func move_to_floor(flr):
 
 func _set_flr(f):
 	flr = f
-	position.y = flr * -Constants.CELL_SIZE.y
+	position = Constants.cell_pos(flr, index)
 
 func _physics_process(delta):
 	var distance = _destination - flr

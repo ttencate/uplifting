@@ -10,25 +10,31 @@ signal cell_clicked
 signal lift_arrived
 
 var _cells: Array = []
+var _rooms: Array = []
 
 func _ready():
 	_update_cells()
 
-func cell_pos(flr, lift):
-	return Vector2(lift, -flr) * Constants.CELL_SIZE
+func get_free_slots(flr):
+	var free_slots = []
+	for lift in lifts:
+		if lift.flr == flr and lift.doors_open():
+			for slot in lift.get_free_slots():
+				free_slots.push_back([slot, lift])
+	return free_slots
 
 func set_light_on(flr, lift_index, on):
 	var cell = _cells[flr][lift_index]
 	cell.set_light_on(on)
 
 func _update_cells():
-	while len(_cells) > num_floors:
+	while len(_cells) >= num_floors:
 		var row = _cells.pop_back()
 		for cell in row:
 			cell.queue_free()
-	while len(_cells) < num_floors:
+	while len(_cells) <= num_floors:
 		_cells.push_back([])
-	for flr in len(_cells):
+	for flr in num_floors + 1:
 		var row = _cells[flr]
 		while len(row) > num_lifts:
 			row.pop_back().queue_free()
@@ -39,6 +45,20 @@ func _update_cells():
 			cell.connect("clicked", self, "_cell_clicked", [flr, lift_index])
 			add_child(cell)
 			row.push_back(cell)
+	
+	while len(_rooms) >= num_floors:
+		var row = _rooms.pop_back()
+		for room in row:
+			room.queue_free()
+	while len(_rooms) <= num_floors:
+		var flr = len(_rooms)
+		var left = preload("res://building/room.tscn").instance()
+		left.position = Constants.cell_pos(flr, -1)
+		add_child(left)
+		var right = preload("res://building/room.tscn").instance()
+		right.position = Constants.cell_pos(flr, num_lifts)
+		add_child(right)
+		_rooms.push_back([left, right])
 	
 	while len(lifts) > num_lifts:
 		lifts.pop_back().queue_free()
@@ -59,7 +79,7 @@ func _set_num_lifts(n: int):
 	_update_cells()
 
 func _get_size() -> Vector2:
-	return Vector2(num_lifts, num_floors) * Constants.CELL_SIZE
+	return Vector2(num_lifts + 2, num_floors) * Constants.CELL_SIZE + Vector2(0, 64)
 
 func _cell_clicked(flr, lift_index):
 	emit_signal("cell_clicked", flr, lift_index)

@@ -11,7 +11,7 @@ func _ready():
 
 func init(flr, lift_index):
 	_floor = flr
-	position = Vector2(lift_index, -flr) * Constants.CELL_SIZE
+	position = Constants.cell_pos(flr, lift_index)
 
 func set_light_on(on):
 	_light.visible = on

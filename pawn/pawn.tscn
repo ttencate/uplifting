@@ -14,3 +14,7 @@ texture = ExtResource( 2 )
 [node name="head" type="Sprite" parent="."]
 position = Vector2( 0, -120 )
 texture = ExtResource( 3 )
+
+[node name="visibility_notifier" type="VisibilityNotifier2D" parent="."]
+position = Vector2( 2.14577e-06, -72 )
+scale = Vector2( 3.2, 7.2 )
