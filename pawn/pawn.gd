@@ -47,7 +47,7 @@ func init(building, patience):
 func _ready():
 	var hue = randf()
 	var full_saturation = 1.0
-	var empty_saturation = 0.5
+	var empty_saturation = 0.3
 	var empty_value = rand_range(0.7, 1.0)
 	var full_value = empty_value
 	$body.self_modulate = Color.from_hsv(hue, empty_saturation, empty_value)
