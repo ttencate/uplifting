@@ -39,6 +39,8 @@ func _ready():
 	_update_lights()
 	_rescale()
 	_spawn()
+	
+	get_tree().paused = false
 
 func _spawn():
 	var pawn = preload("res://pawn/pawn.tscn").instance()
@@ -50,9 +52,6 @@ func _spawn():
 	$spawn_timer.start(_spawn_interval)
 
 func _physics_process(delta):
-	if _game_over:
-		return
-	
 	for pawn in _pawns.get_children():
 		pawn.tick(delta, _building)
 	_update_lights()
@@ -103,6 +102,7 @@ func _pawn_expired():
 	if _game_over:
 		return
 	_game_over = true
+	get_tree().paused = true
 	var scene = preload("res://hud/game_over.tscn").instance()
 	scene.init(_transported, _time)
 	scene.rect_size = get_viewport().get_visible_rect().size

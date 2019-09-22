@@ -72,6 +72,8 @@ func _move_to_lift(delta, building):
 			_lift = destination_lift
 			z_index = -50
 			_state = State.IN_LIFT
+			$button_press.pitch_scale = rand_range(0.9, 1.1)
+			$button_press.play()
 			emit_signal("entered_lift", destination, _lift)
 		else:
 			position.x -= delta * _walk_to_lift_speed * sign(distance)
