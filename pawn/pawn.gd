@@ -53,10 +53,10 @@ func _ready():
 	var empty_saturation = 0.3
 	var empty_value = rand_range(0.7, 1.0)
 	var full_value = empty_value
-	$body.self_modulate = Color.from_hsv(hue, empty_saturation, empty_value)
-	$body/head.self_modulate = Color.from_hsv(hue, empty_saturation, empty_value)
-	$body/fill.self_modulate = Color.from_hsv(hue, full_saturation, full_value)
-	$body/head/fill.self_modulate = Color.from_hsv(hue, full_saturation, full_value)
+	$feet/body.self_modulate = Color.from_hsv(hue, empty_saturation, empty_value)
+	$feet/body/head.self_modulate = Color.from_hsv(hue, empty_saturation, empty_value)
+	$feet/body/fill.self_modulate = Color.from_hsv(hue, full_saturation, full_value)
+	$feet/body/head/fill.self_modulate = Color.from_hsv(hue, full_saturation, full_value)
 	_update_hourglass()
 	
 	_voice_index = randi() % 2
@@ -163,20 +163,21 @@ func _process(delta):
 
 func _update_hourglass():
 	var f = 1.0 - (_lifetime / patience)
-	var width = 48
+	var pad = 4
+	var width = 48 + 2*pad
 	var head_height = 48
 	var body_height = 96
 	var total_height = head_height + body_height
-	var hh = clamp(f * total_height - body_height, 0, head_height)
-	var bh = clamp(f * total_height, 0, body_height)
-	var body_fill = $body/fill
-	var head_fill = $body/head/fill
+	var hh = clamp(f * total_height - body_height + pad, 0, head_height + 2*pad)
+	var bh = clamp(f * total_height + pad, 0, body_height + 2*pad)
+	var body_fill = $feet/body/fill
+	var head_fill = $feet/body/head/fill
 	head_fill.region_enabled = true
 	body_fill.region_enabled = true
-	head_fill.region_rect = Rect2(Vector2(0, head_height - hh), Vector2(width, hh))
-	body_fill.region_rect = Rect2(Vector2(0, body_height - bh), Vector2(width, bh))
-	head_fill.offset.y = -hh
-	body_fill.offset.y = -bh
+	head_fill.region_rect = Rect2(Vector2(0, head_height + pad - hh), Vector2(width, hh))
+	body_fill.region_rect = Rect2(Vector2(0, body_height + pad - bh), Vector2(width, bh))
+	head_fill.position.y = head_height + pad - hh
+	body_fill.position.y = body_height + pad - bh
 
 func set_remaining_time(t):
 	_lifetime = patience - t
