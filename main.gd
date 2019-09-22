@@ -2,17 +2,19 @@ extends Node2D
 
 const LEVELS = {
 	0: {'num_floors': 2, 'num_lifts': 1, 'spawn_interval': 4.0},
-	1: {'num_floors': 2, 'num_lifts': 2},
+	1: {'num_floors': 2, 'num_lifts': 2, 'spawn_interval': 3.0},
 	5: {'num_floors': 3, 'num_lifts': 2},
 	20: {'num_floors': 4, 'num_lifts': 2},
-	30: {'num_floors': 4, 'num_lifts': 2, 'spawn_interval': 3.0},
+	30: {'num_floors': 4, 'num_lifts': 2, 'spawn_interval': 2.5},
 	40: {'num_floors': 4, 'num_lifts': 3},
-	50: {'num_floors': 4, 'num_lifts': 3, 'spawn_interval': 2.5},
+	50: {'num_floors': 4, 'num_lifts': 3, 'spawn_interval': 2.0},
 	60: {'num_floors': 5, 'num_lifts': 3},
-	70: {'num_floors': 6, 'num_lifts': 3},
-	80: {'num_floors': 7, 'num_lifts': 3},
+	70: {'num_floors': 5, 'num_lifts': 3, 'spawn_interval': 1.5},
+	80: {'num_floors': 6, 'num_lifts': 3},
 	90: {'num_floors': 7, 'num_lifts': 4},
-	100: {'num_floors': 7, 'num_lifts': 4, 'spawn_interval': 2.0},
+	100: {'num_floors': 7, 'num_lifts': 4, 'spawn_interval': 1.0},
+	110: {'num_floors': 8, 'num_lifts': 4},
+	120: {'num_floors': 8, 'num_lifts': 5, 'spawn_interval': 0.8},
 }
 
 var _spawn_interval: float = 0
@@ -67,6 +69,7 @@ func _update_lights():
 					on = true
 					break
 			_building.set_light_on(flr, lift_index, on)
+			_building.set_coming_on(flr, lift_index, lift._destination == flr)
 
 func _cell_clicked(flr, lift_index):
 	if _game_over:

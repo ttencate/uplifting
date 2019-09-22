@@ -2,6 +2,7 @@ extends Node2D
 
 var _floor: int
 onready var _light = $light
+onready var _coming = $coming
 
 signal clicked
 
@@ -15,6 +16,9 @@ func init(flr, lift_index):
 
 func set_light_on(on):
 	_light.visible = on
+
+func set_coming_on(on):
+	_coming.visible = on
 
 func _button_pressed():
 	emit_signal("clicked")

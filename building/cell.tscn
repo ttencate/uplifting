@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://building/cell.gd" type="Script" id=1]
 [ext_resource path="res://building/shaft.svg" type="Texture" id=2]
 [ext_resource path="res://building/wall.svg" type="Texture" id=3]
 [ext_resource path="res://building/light.tscn" type="PackedScene" id=4]
+[ext_resource path="res://building/light.svg" type="Texture" id=5]
 
 [node name="cell" type="Node2D"]
 script = ExtResource( 1 )
@@ -23,7 +24,12 @@ position = Vector2( 128, -224 )
 
 [node name="button" type="TextureButton" parent="."]
 margin_left = 32.0
-margin_top = -320.0
+margin_top = -384.0
 margin_right = 224.0
 margin_bottom = -128.0
 mouse_default_cursor_shape = 2
+
+[node name="coming" type="Sprite" parent="."]
+visible = false
+position = Vector2( 128, -352 )
+texture = ExtResource( 5 )

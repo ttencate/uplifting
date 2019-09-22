@@ -27,6 +27,10 @@ func set_light_on(flr, lift_index, on):
 	var cell = _cells[flr][lift_index]
 	cell.set_light_on(on)
 
+func set_coming_on(flr, lift_index, on):
+	var cell = _cells[flr][lift_index]
+	cell.set_coming_on(on)
+
 func _update_cells():
 	while len(_cells) >= num_floors:
 		var row = _cells.pop_back()
