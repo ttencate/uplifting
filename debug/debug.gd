@@ -6,4 +6,6 @@ func _unhandled_input(event: InputEvent):
 			KEY_ESCAPE:
 				get_tree().quit()
 			KEY_K:
-				get_tree().call_group("pawns", "_debug_expire")
+				get_tree().call_group("pawns", "set_remaining_time", 0.0)
+			KEY_L:
+				get_tree().call_group("pawns", "set_remaining_time", 10.0)

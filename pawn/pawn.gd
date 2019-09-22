@@ -11,7 +11,7 @@ enum State { MOVING_INTO_VIEW, MOVING_TO_LIFT, IN_LIFT, ARRIVED, EXPIRED }
 
 var _state = State.MOVING_INTO_VIEW
 var _walk_in_speed: float = 48
-var _walk_to_lift_speed: float = 64
+var _walk_to_lift_speed: float = 96
 var _walk_out_speed: float = 96
 var _patience: float = 100
 var _lifetime: float = 0
@@ -65,7 +65,6 @@ func _move_to_lift(delta, building):
 		var destination_lift = free_slots[0][1]
 		var distance = global_position.x - destination_slot.global_position.x
 		if abs(distance) < 32:
-			print("Entering lift")
 			_slot = destination_slot
 			_slot.remote_path = get_path()
 			_lift = destination_lift
@@ -91,25 +90,24 @@ func tick(delta, building):
 			_move_to_lift(delta, building)
 		State.IN_LIFT:
 			if _lift.flr == destination:
-				print("Arrived at destination")
 				flr = destination
 				_slot.remote_path = NodePath("")
 				position.y = Constants.cell_pos(flr, _lift.index).y - 96 + rand_range(-32, 32)
 				z_index = 10
 				_state = State.ARRIVED
-				if position.x < building.size.x / 2:
-					_preferred_x = -64
-				else:
-					_preferred_x = building.size.x + 64
 				modulate = Color(1, 1, 1, 0.5)
 				_slot = null
 				_lift = null
+				$blinker.stop()
+				$fade_out_tween.interpolate_property(self, "modulate", Color.white, Color(1, 1, 1, 0), 1.0, Tween.TRANS_SINE, Tween.EASE_IN)
+				$fade_out_tween.connect("tween_all_completed", self, "queue_free")
+				$fade_out_tween.start()
 				emit_signal("arrived")
 		State.ARRIVED:
-			var distance = position.x - _preferred_x
-			position.x -= delta * _walk_out_speed * sign(distance)
-			if not $visibility_notifier.is_on_screen():
-				queue_free()
+			var direction = sign(position.x - building.size.x / 2)
+			if direction == 0:
+				direction = 1
+			position.x += delta * _walk_out_speed * direction
 		State.EXPIRED:
 			pass
 	if position.x != orig_x:
@@ -120,10 +118,14 @@ func tick(delta, building):
 func _process(delta):
 	match _state:
 		State.ARRIVED, State.EXPIRED:
-			pass
+			$blinker.play("steady")
 		_:
 			_lifetime += delta
 			_update_hourglass()
+			if _lifetime > 0.8 * _patience:
+				$blinker.play("blink")
+			else:
+				$blinker.play("steady")
 			if _lifetime > _patience:
 				_state = State.EXPIRED
 				emit_signal("expired")
@@ -145,6 +147,6 @@ func _update_hourglass():
 	head_fill.offset.y = -hh
 	body_fill.offset.y = -bh
 
-func _debug_expire():
-	_lifetime = _patience
+func set_remaining_time(t):
+	_lifetime = _patience - t
 	_update_hourglass()

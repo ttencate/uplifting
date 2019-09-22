@@ -14,7 +14,8 @@ num_lifts = 2
 [node name="pawns" type="YSort" parent="building"]
 
 [node name="spawn_timer" type="Timer" parent="."]
-autostart = true
+
+[node name="tween" type="Tween" parent="."]
 
 [node name="overlay" type="Node2D" parent="."]
 z_index = 1000

@@ -53,12 +53,14 @@ func _update_cells():
 	while len(_rooms) <= num_floors:
 		var flr = len(_rooms)
 		var left = preload("res://building/room.tscn").instance()
-		left.position = Constants.cell_pos(flr, -1)
 		add_child(left)
 		var right = preload("res://building/room.tscn").instance()
-		right.position = Constants.cell_pos(flr, num_lifts)
 		add_child(right)
 		_rooms.push_back([left, right])
+	for flr in len(_rooms):
+		var row = _rooms[flr]
+		row[0].position = Constants.cell_pos(flr, -1)
+		row[1].position = Constants.cell_pos(flr, num_lifts)
 	
 	while len(lifts) > num_lifts:
 		lifts.pop_back().queue_free()
