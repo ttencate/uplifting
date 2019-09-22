@@ -2,6 +2,7 @@ extends Node2D
 
 var flr: int = 0
 var destination: int = 0
+var patience: float = 60
 
 signal entered_lift
 signal arrived
@@ -13,13 +14,12 @@ var _state = State.MOVING_INTO_VIEW
 var _walk_in_speed: float = 48
 var _walk_to_lift_speed: float = 96
 var _walk_out_speed: float = 96
-var _patience: float = 100
 var _lifetime: float = 0
 var _lift = null
 var _slot = null
 var _preferred_x: float = 0
 
-func init(building):
+func init(building, patience):
 	var random = randi() % 3
 	if random == 0:
 		flr = 1 + randi() % (building.num_floors - 1)
@@ -41,6 +41,8 @@ func init(building):
 		_preferred_x = Constants.cell_pos(flr, rand_range(building.num_lifts - 1, building.num_lifts)).x
 	position.y -= 96 + rand_range(-32, 32)
 	z_index = 10
+	
+	self.patience = patience
 
 func _ready():
 	var hue = randf()
@@ -122,16 +124,16 @@ func _process(delta):
 		_:
 			_lifetime += delta
 			_update_hourglass()
-			if _lifetime > 0.8 * _patience:
+			if _lifetime > 0.7 * patience:
 				$blinker.play("blink")
 			else:
 				$blinker.play("steady")
-			if _lifetime > _patience:
+			if _lifetime > patience:
 				_state = State.EXPIRED
 				emit_signal("expired")
 
 func _update_hourglass():
-	var f = 1.0 - (_lifetime / _patience)
+	var f = 1.0 - (_lifetime / patience)
 	var width = 48
 	var head_height = 48
 	var body_height = 96
@@ -148,5 +150,5 @@ func _update_hourglass():
 	body_fill.offset.y = -bh
 
 func set_remaining_time(t):
-	_lifetime = _patience - t
+	_lifetime = patience - t
 	_update_hourglass()

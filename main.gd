@@ -1,10 +1,10 @@
 extends Node2D
 
 const LEVELS = {
-	0: {'num_floors': 2, 'num_lifts': 1, 'spawn_interval': 4.0},
-	1: {'num_floors': 2, 'num_lifts': 2, 'spawn_interval': 3.0},
+	0: {'num_floors': 2, 'num_lifts': 1, 'spawn_interval': 4.0, 'patience': 20},
+	1: {'num_floors': 2, 'num_lifts': 2, 'spawn_interval': 3.0, 'patience': 30},
 	5: {'num_floors': 3, 'num_lifts': 2},
-	20: {'num_floors': 4, 'num_lifts': 2},
+	20: {'num_floors': 4, 'num_lifts': 2, 'patience': 60},
 	30: {'num_floors': 4, 'num_lifts': 2, 'spawn_interval': 2.5},
 	40: {'num_floors': 4, 'num_lifts': 3},
 	50: {'num_floors': 4, 'num_lifts': 3, 'spawn_interval': 2.0},
@@ -18,6 +18,7 @@ const LEVELS = {
 }
 
 var _spawn_interval: float = 0
+var _patience: float = 0
 var _transported: int = 0
 var _time: float = 0
 var _game_over: bool = false
@@ -41,7 +42,7 @@ func _ready():
 
 func _spawn():
 	var pawn = preload("res://pawn/pawn.tscn").instance()
-	pawn.init(_building)
+	pawn.init(_building, _patience)
 	pawn.connect("arrived", self, "_pawn_arrived")
 	pawn.connect("expired", self, "_pawn_expired")
 	_pawns.add_child(pawn)
@@ -92,6 +93,8 @@ func _switch_level(level, tween=true):
 		_building.num_lifts = level['num_lifts']
 	if level.has('spawn_interval'):
 		_spawn_interval = level['spawn_interval']
+	if level.has('patience'):
+		_patience = level['patience']
 	if tween:
 		$tween.interpolate_method(self, "_set_size", prev_size, _building.size, 1.0, Tween.TRANS_SINE, Tween.EASE_IN_OUT)
 		$tween.start()
@@ -114,5 +117,5 @@ func _rescale():
 
 func _set_size(size):
 	get_tree().set_screen_stretch(SceneTree.STRETCH_MODE_VIEWPORT, SceneTree.STRETCH_ASPECT_KEEP, size)
-	_building.position = Vector2(0, _building.size.y)
+	_building.position = Vector2(0, size.y)
 	_hud.rect_size.x = size.x
