@@ -34,6 +34,8 @@ onready var _overlay = $overlay
 onready var _hud = find_node("hud")
 
 func _ready():
+	OS.set_window_maximized(true)
+	
 	randomize()
 	
 	_switch_level(LEVELS[0], false)
