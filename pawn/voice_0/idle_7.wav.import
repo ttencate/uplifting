@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/idle_7.wav-4490f5f2832d1b6473cd153787e3e281.sample"
+
+[deps]
+
+source_file="res://pawn/voice_0/idle_7.wav"
+dest_files=[ "res://.import/idle_7.wav-4490f5f2832d1b6473cd153787e3e281.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=true
+edit/normalize=true
+edit/loop=false
+compress/mode=0

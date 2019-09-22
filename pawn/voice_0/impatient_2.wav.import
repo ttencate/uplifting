@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/impatient_2.wav-aff3c4cd38366277f668b883705fff3b.sample"
+
+[deps]
+
+source_file="res://pawn/voice_0/impatient_2.wav"
+dest_files=[ "res://.import/impatient_2.wav-aff3c4cd38366277f668b883705fff3b.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=true
+edit/normalize=true
+edit/loop=false
+compress/mode=0

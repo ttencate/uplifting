@@ -18,6 +18,9 @@ var _lifetime: float = 0
 var _lift = null
 var _slot = null
 var _preferred_x: float = 0
+var _voice_index: int
+
+onready var _speech: AudioStreamPlayer2D = $speech
 
 func init(building, patience):
 	var random = randi() % 3
@@ -55,6 +58,27 @@ func _ready():
 	$body/fill.self_modulate = Color.from_hsv(hue, full_saturation, full_value)
 	$body/head/fill.self_modulate = Color.from_hsv(hue, full_saturation, full_value)
 	_update_hourglass()
+	
+	_voice_index = randi() % 2
+	_speech.pitch_scale = rand_range(0.7, 1.3)
+	
+	$speech_timer.connect("timeout", self, "_speak")
+	_speak()
+
+func _speak():
+	if _speech.playing:
+		return
+	var num_pawns = len(get_tree().get_nodes_in_group("pawns"))
+	var type = "impatient" if _is_impatient() else "idle"
+	var num_variants = {
+		0: {"idle": 10, "impatient": 3},
+		1: {"idle": 14, "impatient": 5},
+	}[_voice_index][type]
+	var path = "res://pawn/voice_%d/%s_%d.wav" % [_voice_index, type, randi() % num_variants]
+	_speech.stream = load(path)
+	_speech.volume_db = (-12 if _is_impatient() else -18) - 0.5 * num_pawns
+	_speech.play()
+	$speech_timer.start(rand_range(5, 10))
 
 func _sort_slots(a, b):
 	return global_position.distance_squared_to(a[0].global_position) < global_position.distance_squared_to(b[0].global_position)
@@ -119,6 +143,9 @@ func tick(delta, building):
 	else:
 		$animation_player.play("stand")
 
+func _is_impatient():
+	return _lifetime > 0.7 * patience
+
 func _process(delta):
 	match _state:
 		State.ARRIVED, State.EXPIRED:
@@ -126,7 +153,7 @@ func _process(delta):
 		_:
 			_lifetime += delta
 			_update_hourglass()
-			if _lifetime > 0.7 * patience:
+			if _is_impatient():
 				$blinker.play("blink")
 			else:
 				$blinker.play("steady")

@@ -109,5 +109,9 @@ anims/steady = SubResource( 4 )
 
 [node name="fade_out_tween" type="Tween" parent="."]
 
-[node name="button_press" type="AudioStreamPlayer" parent="."]
+[node name="button_press" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource( 4 )
+
+[node name="speech" type="AudioStreamPlayer2D" parent="."]
+
+[node name="speech_timer" type="Timer" parent="."]
