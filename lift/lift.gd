@@ -38,6 +38,10 @@ func move_to_floor(flr):
 	if flr == _destination or flr == self.flr:
 		return
 	_destination = flr
+	if not $start.playing:
+		$start.pitch_scale = rand_range(0.9, 1.1)
+		$start.play()
+	$stop.stop()
 
 func _set_flr(f):
 	flr = f
@@ -52,9 +56,14 @@ func _physics_process(delta):
 	if overshooting:
 		var direction = sign(_speed)
 		_speed -= delta * sign(_speed) * _deceleration
+		if not $stop.playing:
+			$stop.pitch_scale = rand_range(0.9, 1.1)
+			$stop.play()
 		if sign(_speed) != direction and abs(flr - _destination) < 0.1:
 			_speed = 0
 			flr = _destination
+			$bell.play()
+			$stop.stop()
 			emit_signal("arrived", flr)
 	else:
 		_speed = clamp(_speed + delta * destination_direction * _acceleration, -_max_speed, _max_speed)

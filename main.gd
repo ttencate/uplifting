@@ -1,8 +1,8 @@
 extends Node2D
 
 const LEVELS = {
-	0: {'num_floors': 2, 'num_lifts': 1, 'spawn_interval': 4.0, 'patience': 20},
-	1: {'num_floors': 2, 'num_lifts': 2, 'spawn_interval': 3.0, 'patience': 30},
+	0: {'num_floors': 2, 'num_lifts': 1, 'spawn_interval': 4.0, 'patience': 30},
+	1: {'num_floors': 2, 'num_lifts': 2, 'spawn_interval': 3.0, 'patience': 45},
 	5: {'num_floors': 3, 'num_lifts': 2},
 	20: {'num_floors': 4, 'num_lifts': 2, 'patience': 60},
 	30: {'num_floors': 4, 'num_lifts': 2, 'spawn_interval': 2.5},
@@ -70,7 +70,7 @@ func _update_lights():
 					on = true
 					break
 			_building.set_light_on(flr, lift_index, on)
-			_building.set_coming_on(flr, lift_index, lift._destination == flr)
+			_building.set_coming_on(flr, lift_index, lift._destination == flr and lift.flr != flr)
 
 func _cell_clicked(flr, lift_index):
 	if _game_over:
