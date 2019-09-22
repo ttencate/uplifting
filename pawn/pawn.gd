@@ -144,3 +144,7 @@ func _update_hourglass():
 	body_fill.region_rect = Rect2(Vector2(0, body_height - bh), Vector2(width, bh))
 	head_fill.offset.y = -hh
 	body_fill.offset.y = -bh
+
+func _debug_expire():
+	_lifetime = _patience
+	_update_hourglass()
