@@ -21,6 +21,7 @@ const LEVELS = {
 	160: {'num_floors': 10, 'num_lifts': 6},
 }
 
+var _has_shown_intro: bool = false
 var _spawn_interval: float = 0
 var _patience: float = 0
 var _transported: int = 0
@@ -44,6 +45,18 @@ func _ready():
 	_rescale()
 	_spawn()
 	
+	get_tree().paused = true
+	if Globals.has_shown_intro:
+		_start()
+	else:
+		Globals.has_shown_intro = true
+		var scene = preload("res://hud/intro.tscn").instance()
+		scene.rect_size = get_viewport().get_visible_rect().size
+		scene.connect("dismissed", self, "_start")
+		scene.connect("dismissed", scene, "queue_free")
+		_overlay.add_child(scene)
+
+func _start():
 	get_tree().paused = false
 
 func _spawn():
@@ -120,6 +133,6 @@ func _rescale():
 	_set_size(_building.size)
 
 func _set_size(size):
-	get_tree().set_screen_stretch(SceneTree.STRETCH_MODE_VIEWPORT, SceneTree.STRETCH_ASPECT_KEEP, size)
+	get_tree().set_screen_stretch(SceneTree.STRETCH_MODE_2D, SceneTree.STRETCH_ASPECT_KEEP, size)
 	_building.position = Vector2(0, size.y)
 	_hud.rect_size.x = size.x

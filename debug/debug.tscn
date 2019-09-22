@@ -3,4 +3,5 @@
 [ext_resource path="res://debug/debug.gd" type="Script" id=1]
 
 [node name="debug" type="Node2D"]
+pause_mode = 2
 script = ExtResource( 1 )
