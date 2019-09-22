@@ -5,13 +5,16 @@ var destination: int = 0
 
 signal entered_lift
 signal arrived
+signal expired
 
-enum State { MOVING_INTO_VIEW, MOVING_TO_LIFT, IN_LIFT, ARRIVED }
+enum State { MOVING_INTO_VIEW, MOVING_TO_LIFT, IN_LIFT, ARRIVED, EXPIRED }
 
 var _state = State.MOVING_INTO_VIEW
 var _walk_in_speed: float = 48
 var _walk_to_lift_speed: float = 64
 var _walk_out_speed: float = 96
+var _patience: float = 100
+var _lifetime: float = 0
 var _lift = null
 var _slot = null
 var _preferred_x: float = 0
@@ -41,14 +44,15 @@ func init(building):
 
 func _ready():
 	var hue = randf()
-	var saturation = 1
-	var head_value = 0
-	var body_value = 0
-	while abs(head_value - body_value) < 0.2:
-		head_value = rand_range(0.5, 1)
-		body_value = rand_range(0.5, 1)
-	$body/head.self_modulate = Color.from_hsv(hue, saturation, head_value)
-	$body.self_modulate = Color.from_hsv(hue, saturation, body_value)
+	var full_saturation = 1.0
+	var empty_saturation = 0.5
+	var empty_value = rand_range(0.7, 1.0)
+	var full_value = empty_value
+	$body.self_modulate = Color.from_hsv(hue, empty_saturation, empty_value)
+	$body/head.self_modulate = Color.from_hsv(hue, empty_saturation, empty_value)
+	$body/fill.self_modulate = Color.from_hsv(hue, full_saturation, full_value)
+	$body/head/fill.self_modulate = Color.from_hsv(hue, full_saturation, full_value)
+	_update_hourglass()
 
 func _sort_slots(a, b):
 	return global_position.distance_squared_to(a[0].global_position) < global_position.distance_squared_to(b[0].global_position)
@@ -106,7 +110,37 @@ func tick(delta, building):
 			position.x -= delta * _walk_out_speed * sign(distance)
 			if not $visibility_notifier.is_on_screen():
 				queue_free()
+		State.EXPIRED:
+			pass
 	if position.x != orig_x:
 		$animation_player.play("walk")
 	else:
 		$animation_player.play("stand")
+
+func _process(delta):
+	match _state:
+		State.ARRIVED, State.EXPIRED:
+			pass
+		_:
+			_lifetime += delta
+			_update_hourglass()
+			if _lifetime > _patience:
+				_state = State.EXPIRED
+				emit_signal("expired")
+
+func _update_hourglass():
+	var f = 1.0 - (_lifetime / _patience)
+	var width = 48
+	var head_height = 48
+	var body_height = 96
+	var total_height = head_height + body_height
+	var hh = clamp(f * total_height - body_height, 0, head_height)
+	var bh = clamp(f * total_height, 0, body_height)
+	var body_fill = $body/fill
+	var head_fill = $body/head/fill
+	head_fill.region_enabled = true
+	body_fill.region_enabled = true
+	head_fill.region_rect = Rect2(Vector2(0, head_height - hh), Vector2(width, hh))
+	body_fill.region_rect = Rect2(Vector2(0, body_height - bh), Vector2(width, bh))
+	head_fill.offset.y = -hh
+	body_fill.offset.y = -bh
