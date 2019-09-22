@@ -15,7 +15,12 @@ func init(flr, lift_index):
 	position = Constants.cell_pos(flr, lift_index)
 
 func set_light_on(on):
-	_light.visible = on
+	if on == _light.visible:
+		return
+	if on:
+		$light_animation.play("show")
+	else:
+		$light_animation.play("hide")
 
 func set_coming_on(on):
 	_coming.visible = on

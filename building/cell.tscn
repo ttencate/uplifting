@@ -1,10 +1,66 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://building/cell.gd" type="Script" id=1]
 [ext_resource path="res://building/shaft.svg" type="Texture" id=2]
 [ext_resource path="res://building/wall.svg" type="Texture" id=3]
 [ext_resource path="res://building/light.tscn" type="PackedScene" id=4]
 [ext_resource path="res://building/light.svg" type="Texture" id=5]
+
+[sub_resource type="Animation" id=2]
+resource_name = "hide"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/path = NodePath("light:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("light:scale")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 1, 1 ), Vector2( 0, 0 ) ]
+}
+
+[sub_resource type="Animation" id=1]
+resource_name = "show"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/path = NodePath("light:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("light:scale")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.2, 0.4 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0.5, 0.5 ), Vector2( 1.2, 1.2 ), Vector2( 1, 1 ) ]
+}
 
 [node name="cell" type="Node2D"]
 script = ExtResource( 1 )
@@ -20,7 +76,9 @@ position = Vector2( 128, -192 )
 texture = ExtResource( 3 )
 
 [node name="light" parent="." instance=ExtResource( 4 )]
+visible = false
 position = Vector2( 128, -224 )
+scale = Vector2( 1e-05, 1e-05 )
 
 [node name="button" type="TextureButton" parent="."]
 margin_left = 32.0
@@ -33,3 +91,7 @@ mouse_default_cursor_shape = 2
 visible = false
 position = Vector2( 128, -352 )
 texture = ExtResource( 5 )
+
+[node name="light_animation" type="AnimationPlayer" parent="."]
+anims/hide = SubResource( 2 )
+anims/show = SubResource( 1 )
