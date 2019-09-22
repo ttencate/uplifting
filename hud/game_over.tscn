@@ -103,3 +103,7 @@ custom_fonts/font = ExtResource( 4 )
 text = "
 Click to try again"
 align = 1
+
+[node name="click_timer" type="Timer" parent="."]
+wait_time = 2.0
+autostart = true

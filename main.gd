@@ -9,12 +9,16 @@ const LEVELS = {
 	40: {'num_floors': 4, 'num_lifts': 3},
 	50: {'num_floors': 4, 'num_lifts': 3, 'spawn_interval': 2.0},
 	60: {'num_floors': 5, 'num_lifts': 3},
-	70: {'num_floors': 5, 'num_lifts': 3, 'spawn_interval': 1.5},
+	70: {'num_floors': 5, 'num_lifts': 3, 'spawn_interval': 1.8},
 	80: {'num_floors': 6, 'num_lifts': 3},
 	90: {'num_floors': 7, 'num_lifts': 4},
-	100: {'num_floors': 7, 'num_lifts': 4, 'spawn_interval': 1.0},
+	100: {'num_floors': 7, 'num_lifts': 4, 'spawn_interval': 1.5},
 	110: {'num_floors': 8, 'num_lifts': 4},
-	120: {'num_floors': 8, 'num_lifts': 5, 'spawn_interval': 0.8},
+	120: {'num_floors': 8, 'num_lifts': 5, 'spawn_interval': 1.0},
+	130: {'num_floors': 9, 'num_lifts': 5},
+	140: {'num_floors': 10, 'num_lifts': 5},
+	150: {'num_floors': 10, 'num_lifts': 5, 'spawn_interval': 0.9},
+	160: {'num_floors': 10, 'num_lifts': 6},
 }
 
 var _spawn_interval: float = 0
